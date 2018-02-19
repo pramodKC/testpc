@@ -1,38 +1,43 @@
-## Welcome to GitHub Pages (Site)
 
+# Peppermint-Chain: The Technical Architecture
 
-You can use the [editor on GitHub](https://github.com/pramodKC/testpc/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+The basic structure of Peppermint-Chain is that of an Operating-System. Like a regular Operating-System abstracts out the complexity of interacting with hardware into a simple set of APIs, Peppermint-Chain abstract out the complexity of building Blockchain Applications into a set of simple APIs based on proven technologies like Java & SQL. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Peppermint-Chain like other OSes is internally composed of different modules which together provide all the functionality needed to create real-world Blockchain based applications. Modules such as
 
-### Markdown
+1. Data-Storage
+2. Communication
+3. Consensus & Smart-Contracts
+4. Data-Integrity and Data-Confidentiality
+5. Event Handling
+6. Http-Server & Web-Services
+7. Cryptographic Utilities
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Applications on Peppermint-Chain are packages that have a combination of code and declarations that are registered with the different internal modules of the System and interact with other Applications and the Network to acheive their given objectives.
 
-```markdown
-Syntax highlighted code block
+## Data-Storage Module
+The **Data-Storage** module is responsible for the long term persistent storage of Application data and the permissions structure to allow multiple Applications to share persistent data.
 
-# Header 1
-## Header 2
-### Header 3
+In Peppermint-Chain all persistent data is stored in a Relational Data Model. As such each Application defines its Data-Model (in terms of *Tables,Views and Indexes*) that it will be using to store the data. Both the retrieval and modifications of the data can be accomplised using ANSI standard SQL.
 
-- Bulleted
-- List
+Internally the data is stored in a Temporal database to allow access to the state of the system at any point in time. This is required since in a Blockchain the state evolves over time and based on the forking of blocks might require time before it can be considered committed.
 
-1. Numbered
-2. List
+The Data-Model of every Application consists of both a Consensus Part and a Private part. The Consensus Part of the Data-Model can only be modified by *Smart-Contracts* during the Consensus phases of a Transaction. The private part of the Data-Model is modifiable by the UI and Event-Handlers. 
 
-**Bold** and _Italic_ and `Code` text
+Every Application defines its own Data-Model and the parts of other Application Data-Models it intends to access/modify. At Application installation time this information is confirmed by the Installing User. The **Data-Storage** sub-system tracks these permissions and enforces them.
 
-[Link](url) and ![Image](src)
-```
+## Communication Module
+Every Blockchain Application derives most of its value from interaction with other Nodes in a Blockchain and the consensus they reach. The *Communication* module deals with all the interaction between Nodes. This includes communications for
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+1. Node Discovery and Registration
+2. Blockchain based Consensus
+3. Data Transfer
+4. Data Integrity Verification
 
-### Jekyll Themes
+The Communication Module takes care of the basic of packets and messages, allowing the Application code itself to work more at an abstract level dealing with the Application Logic.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/pramodKC/testpc/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Currently the Communication Module uses Google-Protobuf messages over a TCP/IP but we are thinking of adding HTTP as a transport to allow tunnelling through Firewalls if needed.
 
-### Support or Contact
+ 
+## Consensus & Smart-Contracts
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
